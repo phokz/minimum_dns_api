@@ -1,24 +1,90 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Minimal DNS TXT Api server.
 
-Things you may want to cover:
+```
+bundle install
+cp .env.example .env
+cp config/database.yml.example
 
-* Ruby version
+# edit .env to taste
+```
 
-* System dependencies
 
-* Configuration
+# Edit credetials
 
-* Database creation
+```
+editor config/secrets.yml
+```
 
-* Database initialization
+Add for example following credentials under production key (indent by 2 spaces):
 
-* How to run the test suite
+  login: admin
+  password: test
 
-* Services (job queues, cache servers, search engines, etc.)
+# setup database
 
-* Deployment instructions
+```
+RAILS_ENV=production rails db:migrate
+```
 
-* ...
+# run server and open domains page
+
+```
+rails s -d -e production
+xdg-open http://localhost:3000/domains
+```
+
+Add domain(s) you wish to resolve.
+
+
+
+# test adding records
+
+```
+curl -X POST -u "admin:test" -F "domain=txt.record.domain.tld" \
+  -F "txtvalue=2e1d26752c212627ea95b14ce49062c3" \
+   http://localhost:3000/txt
+```
+
+
+# test the record via DNS
+
+```
+host -t soa domain.tld localhost
+host -t txt  txt.record.domain.tld localhost
+```
+
+# test removing records
+
+```
+curl -X DELETE -u "admin:test" -F "domain=txt.record.domain.tld" \
+  http://localhost:3000/txt
+```
+
+# configuring pdns-server
+
+## install
+
+```
+  apt install pdns-backend-mysql pdns-server
+```
+
+# configure
+
+```
+rm rm /etc/powerdns/pdns.d/pdns.simplebind.conf
+cat <<EOF >/etc/powerdns/pdns.d/pdns.local.gmysql.conf
+# MySQL Configuration
+
+launch=gmysql
+
+gmysql-host=localhost
+gmysql-port=
+gmysql-dbname=dns_development
+gmysql-user=user
+gmysql-password=pass
+gmysql-dnssec=no
+```
+
+

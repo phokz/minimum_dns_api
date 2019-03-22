@@ -20,3 +20,5 @@ Gemfile.lock
 config/database.yml
 .env
 .ruby-version
+
+config/secrets.yml

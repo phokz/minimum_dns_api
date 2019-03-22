@@ -6,7 +6,7 @@ chmod 755 /usr/bin/agi
 apt-get update
 
 # misc & ruby & mysql
-agi vim curl build-essential ruby-dev libmysqlclient-dev mysql-server ruby ruby-bundler git nodejs pwgen
+agi vim curl build-essential ruby-dev default-libmysqlclient-dev mysql-server ruby ruby-bundler git nodejs pwgen
 echo -en "\"\\\\e[B\": history-search-forward\n\"\\\\e[A\": history-search-backward\n" \
    >> /etc/inputrc
 
@@ -30,7 +30,7 @@ default: &default
   adapter: mysql2
   encoding: utf8
   pool: <%= ENV.fetch('RAILS_MAX_THREADS') { 5 } %>
-  username: dns_api
+  username: dns
   password: ${h}.
   host: localhost
 
@@ -48,7 +48,7 @@ production:
 EOF
 
 sudo -H mysql -e 'create database dns_production default charset utf8;' 
-sudo -H mysql -e "grant all on dns_production.* to dns@localhost identified by '${h}'"
+sudo -H mysql -e "grant all on dns_production.* to dns@localhost identified by '${h}.'"
 
 
 cd /vagrant
