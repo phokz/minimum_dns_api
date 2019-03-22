@@ -52,10 +52,10 @@ EOF
 sudo -H mysql -e 'create database dns_production default charset utf8;' 
 sudo -H mysql -e "grant all on dns_production.* to dns@localhost identified by '${h}.'"
 
-echo -en "   login: admin\n  password: test\n" >> config/secrets.yml
+echo -en "  login: admin\n  password: test\n" >> config/secrets.yml
 
 
-RAILS_ENV=production su -c "rails db:migrate" vagrant
-SECRET_KEY_BASE=$(pwgen -s 60) RAILS_ENV=production su -c "rails s -d -e production" vagrant
+RAILS_ENV=production su -c "bundle exec rails db:migrate" vagrant
+SECRET_KEY_BASE=$(pwgen -s 60) RAILS_ENV=production su -c "bundle exec rails s -d -e production" vagrant
 
 cd /vagrant
