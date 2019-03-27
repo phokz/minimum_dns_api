@@ -25,10 +25,18 @@ class TxtController < ApplicationController
   end
 
   def load_domain
-    domain_tld = params[:domain].split('.')[-2..-1].join('.')
-    puts "Domain: #{domain_tld}"
-    @domain = Domain.find_by_name(domain_tld)
-    return false if @domain.nil?
+    domain_parts = params[:domain].split('.')
+    while !domain_parts.size.zero? do
+        domain = domain_parts.join('.')
+        @domain = Domain.find_by_name(domain)
+        break if !@domain.nil?
+        domain_parts.shift
+    end
+
+    if @domain.nil?
+       render plain: 'Domain not found.'
+       return false
+    end
 
     puts "Domain found: #{@domain.id}"
   end
